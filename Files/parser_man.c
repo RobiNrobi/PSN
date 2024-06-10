@@ -164,13 +164,8 @@ int pars_03(char *line, t_vec2 *vec2)
 			{
 				fstr_add_char(&str, '\0');
 				fvec_add_str(&vec, &str);
-				fvec2_add_vec(vec2, &vec);
 				fstr_reset(&str);
-				fvec_reset(&vec);
 				fstr_add_char(&str, line[i]);
-				fstr_add_char(&str, '\0');
-				fvec_add_str(&vec, &str);
-				fstr_reset(&str);
 				if (line[i] == '"')
 					str.pd.dq = 1;
 				else 
@@ -180,12 +175,9 @@ int pars_03(char *line, t_vec2 *vec2)
 			else if (!str.s[0] || str.pd.less || str.pd.lessless)
 			{
 				fstr_add_char(&str, line[i]);
-				fstr_add_char(&str, '\0');
-				fvec_add_str(&vec, &str);
-				fstr_reset(&str);
 				if (line[i] == '"')
 					str.pd.dq = 1;
-				else 
+				else
 					str.pd.sq = 1;
 				i++;
 			}
@@ -193,15 +185,10 @@ int pars_03(char *line, t_vec2 *vec2)
 			{
 				if (line[i] == '"' || line[i] == '\'')
 				{
-					fstr_add_char(&str, '\0');
-					fvec_add_str(&vec, &str);
-					fstr_reset(&str);
 					fstr_add_char(&str, line[i]);
 					fstr_add_char(&str, '\0');
 					fvec_add_str(&vec, &str);
-					fvec2_add_vec(vec2, &vec);
 					fstr_reset(&str);
-					fvec_reset(&vec);
 					i--;
 				}
 				else
@@ -236,7 +223,6 @@ int pars_03(char *line, t_vec2 *vec2)
 				fvec_add_str(&vec, &str);
 				fstr_reset(&str);
 			}
-			fstr_add_char(&str, line[i]);
 		}
 		else if ('<' == line[i])
 		{
@@ -248,9 +234,7 @@ int pars_03(char *line, t_vec2 *vec2)
 			{
 				fstr_add_char(&str, '\0');
 				fvec_add_str(&vec, &str);
-				fvec2_add_vec(vec2, &vec);
 				fstr_reset(&str);
-				fvec_reset(&vec);
 				fstr_add_char(&str, line[i]);
 				if (line[i + 1] == '<')
 					fstr_add_char(&str, line[++i]);
@@ -278,11 +262,12 @@ int pars_03(char *line, t_vec2 *vec2)
 		fstr_reset(&str);
 		fvec2_add_vec(vec2, &vec);
 	}
-	fvec2_print_vec2(vec2);
+	fvec_print_vec(&vec);
+	// fvec2_print_vec2(vec2);
+	// fstr_destroy(&str);
 	// fvec_destroy(&vec);
 	// free(vec.tstr);
 	// free(str.s);
-	// fstr_destroy(&str);
 	exit(EXIT_FAILURE);
 	return (1);
 }
