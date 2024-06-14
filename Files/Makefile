@@ -96,6 +96,8 @@ BASE_SOURCES := $(COMMON_SOURCES)	\
 					fvec2_man.c		\
 					minishell.c		\
 					parser_man.c	\
+					token_man.c		\
+					token_man_1.c	\
 					utility.c
 
 BASE_OBJECTS := $(BASE_SOURCES:.c=.o)

@@ -8,7 +8,7 @@
 extern FILE* tracciato;
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char **envp)
 {
 	if (1 != argc)
 	{
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	// ^^^^^^^^^^^^^^^^^^^^^^^^^^
-	if (minishell())
+	if (minishell(envp))
 	{
 		// TODO: remove the following
 		closef();
@@ -35,13 +35,13 @@ int main(int argc, char *argv[])
 	return (1);
 }
 
-int minishell(void)
+int minishell(char **envp)
 {
 	fprintf( tracciato, "minishell()\n" );
 	char	*line;
 
 	line = NULL;
-	if (!pars_parsline(line))
+	if (!pars_parsline(line, envp))
 		return (0);
 	return (1);
 }

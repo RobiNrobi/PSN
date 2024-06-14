@@ -48,6 +48,7 @@ int fstr_copy_to_new(t_str *dest, const t_str * const orig)
 		return (0);
 	dest->capacity = orig->capacity;
 	dest->size = orig->size;
+	dest->state = orig->state;
 	dest->s = malloc(sizeof(char) * (size_t)orig->capacity);
 	i = 0;
 	while (dest->capacity > i)
@@ -113,11 +114,6 @@ char *fstr_init(t_str *str, int cap)
 	str->s = my_calloc((size_t)(cap), sizeof(char));
 	// if (str->s)
 	// 	fstr_init_els(str);
-	str->pd.less = 0;
-	str->pd.dq = 0;
-	str->pd.sq = 0;
-	str->pd.word = 0;
-	str->pd.lessless = 0;
 	return (str->s);
 }
 
@@ -148,11 +144,6 @@ void fstr_print_str(t_str *str)
 	while (str->size > i)
 	{
 		printf("%c", str->s[i]);
-		// printf("    dq:%d", str->pd.dq);
-		// printf("    sq:%d", str->pd.sq);
-		// printf("    less:%d", str->pd.less);
-		// printf("    lessless:%d", str->pd.lessless);
-		// printf("    word:%d", str->pd.word);
 		++i;
 	}
 }
@@ -178,10 +169,5 @@ int fstr_reset(t_str *str)
 		++i;
 	}
 	str->size = 0;
-	str->pd.less = 0;
-	str->pd.dq = 0;
-	str->pd.sq = 0;
-	str->pd.word = 0;
-	str->pd.lessless = 0;
 	return (1);
 }

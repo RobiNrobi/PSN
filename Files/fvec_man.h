@@ -11,6 +11,7 @@ typedef struct s_fvec
 {
 	int		size;
 	int		capacity;
+	char 	**env;
 	t_str	*tstr;
 }	t_vec;
 
@@ -19,8 +20,8 @@ int		fvec_copy(t_vec *dest, t_vec *orig);
 int		fvec_copy_to_new(t_vec *dest, t_vec *orig);
 void	fvec_destroy(t_vec *vec);
 int		fvec_double_cap(t_vec *vec);
-int		fvec_init(t_vec *vec, int cap);
-int		fvec_reset(t_vec *vec);
+int		fvec_init(t_vec *vec, int cap, char **envp);
+// int		fvec_reset(t_vec *vec);
 
 void	fvec_print_vec(t_vec *vec);		// for DEBUG only
 

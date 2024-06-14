@@ -49,6 +49,7 @@ int fvec_copy_to_new(t_vec *dest, t_vec *orig)
 		return (0);
 	dest->capacity = orig->capacity;
 	dest->size = orig->size;
+	dest->env = orig->env;
 	dest->tstr = my_calloc((size_t)dest->capacity, sizeof(t_str));
 	i = 0;
 	while (dest->capacity > i)
@@ -77,8 +78,8 @@ void	fvec_destroy(t_vec *vec)
 				fstr_destroy(&vec->tstr[i]);
 		--i;
 	}
+	fstr_destroy(&vec->tstr[i]);
 	free(vec->tstr);
-	vec->tstr = NULL;
 }
 
 int fvec_double_cap(t_vec *vec)
@@ -103,13 +104,14 @@ int fvec_double_cap(t_vec *vec)
 	return (1);
 }
 
-int	fvec_init(t_vec *vec, int cap)
+int	fvec_init(t_vec *vec, int cap, char **envp)
 {
 	fprintf( tracciato, "fvec_init(t_vec*)\n" );
 	if (1 > cap)
 		cap = DEFAULT_VEC_SIZE;
 	vec->size = 0;
 	vec->capacity = cap;
+	vec->env = envp;
 	// vec->tstr = malloc(sizeof(t_str) * (size_t)(vec->capacity));
 	vec->tstr = my_calloc((size_t)(vec->capacity), sizeof(t_str));
 	if (!vec->tstr)
@@ -117,14 +119,30 @@ int	fvec_init(t_vec *vec, int cap)
 	return (1);
 }
 
-int fvec_reset(t_vec *vec)
-{
-	fprintf( tracciato, "fvec_reset(t_vec*)\n" );
-	if (!vec)
-		return (0);
-	fvec_destroy(vec);
-	fvec_init(vec, 0);
-	return (1);
+// int fvec_reset(t_vec *vec)
+// {
+// 	fprintf( tracciato, "fvec_reset(t_vec*)\n" );
+// 	if (!vec)
+// 		return (0);
+// 	fvec_destroy(vec);
+// 	fvec_init(vec, 0);
+// 	return (1);
+// }
+
+// Funzione per convertire l'enumerazione in una stringa
+// Da cancellare
+static const char* state_to_string(t_state state) {
+    switch (state) {
+        case dq: return "dq";
+        case sq: return "sq";
+        case less: return "less";
+        case lessless: return "lessless";
+        case great: return "great";
+        case greatgreat: return "greatgreat";
+        case pipes: return "pipe";
+        case word: return "word";
+        default: return "unknown";
+    }
 }
 
 void fvec_print_vec(t_vec *vec)
@@ -138,7 +156,7 @@ void fvec_print_vec(t_vec *vec)
 	{
 		printf( "\ttstr %2d: ", i );
 		fstr_print_str(&vec->tstr[i]);
-		printf("\n");
+		printf("\tState: %s\n", state_to_string(vec->tstr[i].state));
 		++i;
 	}
 	printf("\n");

@@ -6,21 +6,26 @@
 # define DEFAULT_STR_SIZE 15
 #endif
 
-typedef struct s_parsdata
+typedef enum state
 {
-	int dq;
-	int	sq;
-	int less;
-	int lessless;
-	int word;
-}	t_pd;
+	dq,
+	sq,
+	less,
+	lessless,
+	great,
+	greatgreat,
+	pipes,
+	word,
+	dollar,
+	other,
+}	t_state;
 
 typedef struct s_fstr
 {
 	int		size;
 	int		capacity;
 	char	*s;
-	t_pd	pd;
+	t_state state;
 }	t_str;
 
 void	fstr_add_char(t_str *str, char c);
