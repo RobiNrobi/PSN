@@ -1,34 +1,63 @@
 #include "parser_man.h"
-#include "fvec_man.h"
-#include "utility.h"
+// #include "utility.h"
 #include "token_man.h"
-#include "../_extra.h"
-// #include <readline/readline.h>
-// #include <readline/history.h>
-#include <stdio.h>
+#include "utility.h"
 #include <stdlib.h>
 
 //TODO: remove the following
+#include "../_extra.h"
+#include <stdio.h>
 extern FILE* tracciato;
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-int	pars_get_words_seq(t_vec *vec, char *line, char *envp[])
+int pars_expand_var(t_vec *vec, int ind, int ch)
 {
-	fprintf( tracciato, "pars_get_words_seq(t_vec*, %s)\n", line );
-	t_str str;
+	fprintf( tracciato, "pars_expand_var(t_vec*, %d, %d)\n", ind, ch );
+	char	*new_s;
 
-	if (!fvec_init(vec, 0, envp))
-		return (0);
-	if (!fstr_init(&str, 0))
+	new_s = getenv(&vec->tstr[ind].s[ch]);
+	if (!new_s)
 	{
-		fvec_destroy(vec);
+		fprintf( tracciato, "...pars_expand_var()\tnew_s is NULL\n" );
 		return (0);
 	}
-	pars_03(line, vec, str);
+	fstr_replace_from_pos(&vec->tstr[ind], ch, new_s);
 	return (1);
 }
 
-int pars_parsline(char *line, char *envp[])
+int pars_expand_vars(t_vec *vec)
+{
+	fprintf( tracciato, "pars_expand_vars(t_vec*)\n" );
+	int	i;
+	int	k;
+
+	i = 0;
+	while (vec->size > i)
+	{
+		k = 0;
+		while (vec->tstr[i].size > k)
+		{
+			if ('$' == vec->tstr[i].s[k] &&
+				(!k || my_isspace(vec->tstr[i].s[k - 1])))
+				pars_expand_var(vec, i, k + 1);
+			++k;
+		}
+		++i;
+	}
+	return (0);
+}
+
+int	pars_get_words_seq(t_vec *vec, char *line)
+{
+	fprintf( tracciato, "pars_get_words_seq(t_vec*, %s)\n", line );
+
+	if (!fvec_init(vec, 0))
+		return (0);
+	token_pars_03(line, vec);
+	return (1);
+}
+
+int pars_parsline(char *line)
 {
 	fprintf( tracciato, "parsline()\n" );
 	t_vec	seq;
@@ -44,50 +73,18 @@ int pars_parsline(char *line, char *envp[])
 	//	add_history(line);
 	if (!line)
 		return (0);
-	if (error_quotes(line))
+	if (token_error_quotes(line))
 	{
 		free(line);
-		printf("Error: Unclosed Quotes!\n");
+		printf("Error: Unclosed quotes!\n");
 		return (0);
 	}
-	pars_get_words_seq(&seq, line, envp);
+	pars_get_words_seq(&seq, line);
+	fvec_print_vec(&seq);
+	pars_expand_vars(&seq);
 	fvec_print_vec(&seq);
 	fvec_destroy(&seq);
-	fclose(tracciato);
-	exit(EXIT_FAILURE);
 	return (1);
-}
-
-void pars_03(char *line, t_vec *vec, t_str str)
-{
-	fprintf( tracciato, "pars_03(%s, t_vec2*)\n", line );
-	int		i;
-
-	i = 0;
-	while (line[i] && my_isspace(line[i]))
-		++i;
-	while (line[i])
-	{
-		if ('"' == line[i] || '\'' == line[i])
-			quotes_man(line, &i, &str);
-		else if (my_isalnum(line[i]))
-			word_man(line, &i, &str);
-		else if (my_isspace(line[i]))
-			space_man(&str, vec);
-		else if ('<' == line[i])
-			less_man(line, &i, &str, vec);
-		else if ('>' == line[i])
-			great_man(line, &i, &str, vec);
-		else if ('|' == line[i])
-			pipe_man(line, &i, &str, vec);
-		else if ('$' == line[i])
-			dollar_man(line, &i, &str);
-	++i;
-	}
-	if (str.state == word)
-		close_laststr(&str, vec);
-	free(line);
-	fstr_destroy(&str);
 }
 
 void	close_laststr(t_str *str, t_vec *vec)

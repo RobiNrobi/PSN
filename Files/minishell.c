@@ -5,6 +5,7 @@
 
 //TODO: remove the following
 #include "../_extra.h"
+#include "tmp_utils.h"
 extern FILE* tracciato;
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -38,10 +39,19 @@ int main(int argc, char *argv[], char **envp)
 int minishell(char **envp)
 {
 	fprintf( tracciato, "minishell()\n" );
+	(void)envp;
+
+	// TODO: remove the following:
+	t_vec v;
+
+	fvec_init(&v, 0);
+	expand_path(&v);
+	fvec_destroy(&v);
+	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	char	*line;
 
 	line = NULL;
-	if (!pars_parsline(line, envp))
+	if (!pars_parsline(line))
 		return (0);
 	return (1);
 }

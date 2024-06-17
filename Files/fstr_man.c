@@ -48,7 +48,6 @@ int fstr_copy_to_new(t_str *dest, const t_str * const orig)
 		return (0);
 	dest->capacity = orig->capacity;
 	dest->size = orig->size;
-	dest->state = orig->state;
 	dest->s = malloc(sizeof(char) * (size_t)orig->capacity);
 	i = 0;
 	while (dest->capacity > i)
@@ -110,10 +109,7 @@ char *fstr_init(t_str *str, int cap)
 		cap = DEFAULT_STR_SIZE;
 	str->size = 0;
 	str->capacity = cap;
-	// str->s = malloc(sizeof(char) * (size_t)(cap));
 	str->s = my_calloc((size_t)(cap), sizeof(char));
-	// if (str->s)
-	// 	fstr_init_els(str);
 	return (str->s);
 }
 
@@ -146,6 +142,43 @@ void fstr_print_str(t_str *str)
 		printf("%c", str->s[i]);
 		++i;
 	}
+}
+
+void fstr_print_str_n(t_str *str)
+{
+	fprintf( tracciato, "fstr_print_str(%s)\n", str->s );
+	int i;
+
+	if (!str)
+		return ;
+	i = 0;
+	while (str->size > i)
+	{
+		printf("%c", str->s[i]);
+		++i;
+	}
+	printf("\n");
+}
+
+int fstr_replace_from_pos(t_str *str, int ind, const char * const s)
+{
+	fprintf( tracciato, "fstr_replace_from_pos(%s, %d, %s)\n", str->s, ind, s );
+	int i;
+	int	len;
+
+	i = ind;
+	len = my_strlen(s);
+	while (str->size > i && len > i - ind)
+	{
+		str->s[i] = s[i - ind];
+		++i;
+	}
+	while (len > i - ind)
+	{
+		fstr_add_char(str, s[i - ind]);
+		++i;
+	}
+	return (1);
 }
 
 /*

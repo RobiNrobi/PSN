@@ -1,22 +1,37 @@
 #ifndef TOKEN_MAN_C
 #define TOKEN_MAN_C
 
-#include "parser_man.h"
 #include "fvec_man.h"
-#include "utility.h"
-#include "../_extra.h"
-// #include <readline/readline.h>
-// #include <readline/history.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-void	quotes_man(char *line, int *p, t_str *str);
-void	less_man(char *line, int *p, t_str *str, t_vec *vec);
-void	great_man(char *line, int *p, t_str *str, t_vec *vec);
-void	pipe_man(char *line, int *p, t_str *str, t_vec *vec);
-void	space_man(t_str *str, t_vec *vec);
-void	word_man(char *line, int *p, t_str *str);
-void	dollar_man(char *line, int *p, t_str *str);
-int		error_quotes(char *line);
+typedef enum e_metachar
+{
+	other,
+	dq,
+	sq,
+	less,
+	lessless,
+	great,
+	greatgreat,
+	pipes,
+	word,
+	dollar,
+}	t_mc;
+
+typedef struct s_pars_info
+{
+	t_vec	*v;
+	char	*line;
+	t_mc	state;
+}	t_pi;
+
+void	token_dollar(t_pi *pi, t_str *str);
+int		token_error_quotes(char *line);
+void	token_great(t_pi *pi, t_str *str);
+void	token_less(t_pi *pi, t_str *str);
+void	token_pars_03(char *line, t_vec *vec);
+void	token_pipe(t_pi *pi, t_str *str);
+void	token_quotes(t_pi *pi, t_str *str);
+void	token_space(t_pi *pi, t_str *str);
+void	token_word(t_pi *pi, t_str *str);
 
 #endif

@@ -16,11 +16,14 @@ project(MiniShell_01 LANGUAGES C)
 # listed in the command invocation.
 add_executable(MiniShell_01
 	_extra.h            _extra.c
+	Files/execute_bunch.c
 	Files/fstr_man.h    Files/fstr_man.c
 	Files/fvec_man.h    Files/fvec_man.c
 	Files/fvec2_man.h	Files/fvec2_man.c
 	Files/minishell.h   Files/minishell.c
 	Files/parser_man.h  Files/parser_man.c
+	Files/tmp_utils.h   Files/tmp_utils.c
+	Files/token_man.h   Files/token_man.c
 	Files/utility.h     Files/utility.c
 )
 
@@ -93,7 +96,7 @@ elseif (${CMAKE_C_COMPILER_ID} STREQUAL Clang)
 		>)
 # -std=c17
 
-	target_link_options(MiniShell_01 PRIVATE
+    target_link_options(MiniShell_01 PRIVATE
 		-fsanitize=address
 		-fsanitize=alignment
 		-fsanitize=float-cast-overflow

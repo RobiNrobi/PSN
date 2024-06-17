@@ -53,3 +53,7 @@ dkms.conf
 
 # Qt Creator user preferences
 CMakeLists.txt.user
+
+# Executable file name
+minishell
+

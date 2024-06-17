@@ -86,6 +86,7 @@ BASE_DEPS := $(COMMON_DEPS)		\
 				fvec2_man.h		\
 				minshell.h		\
 				parser_man.h	\
+				token_man.h		\
 				utility.h
 
 
@@ -97,7 +98,6 @@ BASE_SOURCES := $(COMMON_SOURCES)	\
 					minishell.c		\
 					parser_man.c	\
 					token_man.c		\
-					token_man_1.c	\
 					utility.c
 
 BASE_OBJECTS := $(BASE_SOURCES:.c=.o)
