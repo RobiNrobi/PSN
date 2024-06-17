@@ -78,7 +78,7 @@ void token_great(t_pi *pi, t_str *str)
 		pi->state = great;
 	fstr_add_char(str, *pi->line);
 	if (greatgreat == pi->state)
-		fstr_add_char(str, ++*pi->line);
+		fstr_add_char(str, *++pi->line);
 	fstr_add_char(str, '\0');
 	fvec_add_str(pi->v, str);
 	fstr_reset(str);
@@ -99,7 +99,7 @@ void token_less(t_pi *pi, t_str *str)
 		pi->state = less;
 	fstr_add_char(str, *pi->line);
 	if (lessless == pi->state)
-		fstr_add_char(str, ++*pi->line);
+		fstr_add_char(str, *++pi->line);
 	fstr_add_char(str, '\0');
 	fvec_add_str(pi->v, str);
 	fstr_reset(str);
@@ -212,7 +212,7 @@ void token_quotes(t_pi *pi, t_str *str)
 		pi->state = dq;
 	else 
 		pi->state = sq;
-	while (++*pi->line)
+	while (*++pi->line)
 	{
 		if ('$' == *pi->line && dq == pi->state)
 		{

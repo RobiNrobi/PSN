@@ -135,7 +135,7 @@ void fvec_print_vec(t_vec *vec)
 	while (vec->size > i)
 	{
 		printf( "\ttstr %2d: ", i );
-		fstr_print_str(&vec->tstr[i]);
+		fstr_print_str_n(&vec->tstr[i]);
 		++i;
 	}
 	printf("\n");

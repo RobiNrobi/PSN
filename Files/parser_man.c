@@ -81,8 +81,8 @@ int pars_parsline(char *line)
 	}
 	pars_get_words_seq(&seq, line);
 	fvec_print_vec(&seq);
-	pars_expand_vars(&seq);
-	fvec_print_vec(&seq);
+	//	pars_expand_vars(&seq);
+	//	fvec_print_vec(&seq);
 	fvec_destroy(&seq);
 	return (1);
 }
