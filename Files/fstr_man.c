@@ -18,6 +18,13 @@ void fstr_add_char(t_str *str, char c)
 	++str->size;
 }
 
+void fstr_close_str(t_str *str)
+{
+	fprintf( tracciato, "fstr_close_str(t_str)\n" );
+	fstr_add_char(str, '\0');
+	--str->size;
+}
+
 int fstr_copy(t_str *dest, t_str const * const orig)
 {
 	fprintf( tracciato, "fstr_copy(s_str*, %s)\n", orig->s );
@@ -30,9 +37,6 @@ int fstr_copy(t_str *dest, t_str const * const orig)
 	i = 0;
 	while (dest->capacity > i)
 	{
-		// fprintf( tracciato
-		// 		, "...fstr_copy()\tcopying orig[%d]: %c into dest[%d]\n"
-		// 		, i, orig->s[i], i );
 		dest->s[i] = orig->s[i];
 		++i;
 	}
@@ -52,9 +56,6 @@ int fstr_copy_to_new(t_str *dest, const t_str * const orig)
 	i = 0;
 	while (dest->capacity > i)
 	{
-		// fprintf( tracciato
-		// 		, "...fstr_copy()\tcopying orig[%d]: %c into dest[%d]\n"
-		// 		, i, orig->s[i], i );
 		dest->s[i] = orig->s[i];
 		++i;
 	}

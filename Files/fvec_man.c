@@ -21,6 +21,13 @@ int fvec_add_str(t_vec *vec, t_str *str)
 	return (1);
 }
 
+int fvec_close_add_str(t_vec *vec, t_str *str)
+{
+	fprintf( tracciato, "fvec_close_add_str(t_vec*, %s)\n", str->s );
+	fstr_close_str(str);
+	return (fvec_add_str(vec, str));
+}
+
 int fvec_copy(t_vec *dest, t_vec *orig)
 {
 	fprintf( tracciato, "fvec_copy(t_vec*, t_vec*)\n" );
@@ -42,7 +49,7 @@ int fvec_copy(t_vec *dest, t_vec *orig)
 
 int fvec_copy_to_new(t_vec *dest, t_vec *orig)
 {
-	fprintf( tracciato, "fvec_copy(t_vec*, t_vec*)\n" );
+	fprintf( tracciato, "fvec_copy_to_new(t_vec*, t_vec*)\n" );
 	int i;
 
 	if (!dest || !orig)
@@ -64,11 +71,9 @@ void	fvec_destroy(t_vec *vec)
 	fprintf( tracciato, "fvec_destroy(t_vec*)\n" );
 	int i;
 
-	if (!vec)
+	if (!vec || !vec->tstr)
 		return ;
-	if (!vec->tstr)
-		return ;
-	i = vec->size - 1;
+	i = vec->capacity - 1;
 	while (0 < i)
 	{
 		if (&vec->tstr[i])

@@ -14,6 +14,7 @@ typedef struct s_fstr
 }	t_str;
 
 void	fstr_add_char(t_str *str, char c);
+void	fstr_close_str(t_str *str);
 int		fstr_copy(t_str *dest, t_str const *const orig);
 int		fstr_copy_to_new(t_str *dest, t_str const *const orig);
 void	fstr_destroy(t_str *str);

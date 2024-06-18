@@ -1,5 +1,5 @@
+#include "fvec2_man.h"
 #include "parser_man.h"
-// #include "utility.h"
 #include "token_man.h"
 #include "utility.h"
 #include <stdlib.h>
@@ -61,6 +61,8 @@ int pars_parsline(char *line)
 {
 	fprintf( tracciato, "parsline()\n" );
 	t_vec	seq;
+	t_vec	seq2;
+	t_vec2	cmds;
 
 	//TODO: restore readline and delete the following lines:
 	line = read_a_line("Viva Ansi!> ");
@@ -79,17 +81,61 @@ int pars_parsline(char *line)
 		printf("Error: Unclosed quotes!\n");
 		return (0);
 	}
-	pars_get_words_seq(&seq, line);
+
+	// NOTE: VARIATION FROM 2024-06-18
+	// t_vec2 instead of t_vec
+	// 'line' is split into chunks on pipes ('|') and only later, t_vec by
+	//  t_vec, on spaces and metacharacters
+	fvec_init(&seq, 0);
+	pars_pars_on_pipes(&seq, line);
 	fvec_print_vec(&seq);
-	//	pars_expand_vars(&seq);
-	//	fvec_print_vec(&seq);
+
+	int	i;
+	i = 0;
+	fvec2_init(&cmds, 0);
+	fvec_init(&seq2, 0);
+	while (seq.size > i)
+	{
+		token_pars_03(seq.tstr[i].s, &seq2);
+		fvec2_add_vec(&cmds, &seq2);
+		fvec_reset(&seq2);
+		++i;
+	}
+	fvec2_print_vec2(&cmds);
+	// pars_get_words_seq(&seq, line);
+	// fvec_print_vec(&seq);
+	fvec_destroy(&seq2);
 	fvec_destroy(&seq);
+	fvec2_destroy(&cmds);
+	free(line);
 	return (1);
 }
 
-void	close_laststr(t_str *str, t_vec *vec)
+void pars_pars_on_pipes(t_vec *tv, char *line)
 {
-	fstr_add_char(str, '\0');
-	fvec_add_str(vec, str);
-	fstr_reset(str);
+	int		in_quotes;
+	t_str	tstr;
+
+	in_quotes = 0;
+	fstr_init(&tstr, 0);
+	while (*line)
+	{
+		if (is_quotes(*line))
+		{
+			if (in_quotes)
+				in_quotes = 0;
+			else
+				in_quotes = 1;
+		}
+		if ('|' == *line && !in_quotes)
+		{
+			fvec_close_add_str(tv, &tstr);
+			fstr_reset(&tstr);
+		}
+		else
+			fstr_add_char(&tstr, *line);
+		++line;
+	}
+	fvec_close_add_str(tv, &tstr);
+	fstr_destroy(&tstr);
 }

@@ -37,7 +37,7 @@ char *my_getline( void )
 			fstr_add_char( &str, (char)ch );
 		}
 	}
-	fstr_add_char( &str, '\0' );
+	fstr_close_str( &str );
 	return str.s;
 }
 

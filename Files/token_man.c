@@ -68,8 +68,7 @@ void token_great(t_pi *pi, t_str *str)
 	fprintf( tracciato, "token_great(t_pi*, %s)\n", str->s );
 	if (str->s[0])
 	{
-		fstr_add_char(str, '\0');
-		fvec_add_str(pi->v, str);
+		fvec_close_add_str(pi->v, str);
 		fstr_reset(str);
 	}
 	if ('>' == pi->line[1])
@@ -79,8 +78,7 @@ void token_great(t_pi *pi, t_str *str)
 	fstr_add_char(str, *pi->line);
 	if (greatgreat == pi->state)
 		fstr_add_char(str, *++pi->line);
-	fstr_add_char(str, '\0');
-	fvec_add_str(pi->v, str);
+	fvec_close_add_str(pi->v, str);
 	fstr_reset(str);
 }
 
@@ -89,8 +87,7 @@ void token_less(t_pi *pi, t_str *str)
 	fprintf( tracciato, "token_less(t_pi*, %s)\n", str->s );
 	if (str->s[0])
 	{
-		fstr_add_char(str, '\0');
-		fvec_add_str(pi->v, str);
+		fvec_close_add_str(pi->v, str);
 		fstr_reset(str);
 	}
 	if ('<' == pi->line[1])
@@ -100,8 +97,7 @@ void token_less(t_pi *pi, t_str *str)
 	fstr_add_char(str, *pi->line);
 	if (lessless == pi->state)
 		fstr_add_char(str, *++pi->line);
-	fstr_add_char(str, '\0');
-	fvec_add_str(pi->v, str);
+	fvec_close_add_str(pi->v, str);
 	fstr_reset(str);
 }
 
@@ -180,11 +176,9 @@ void token_pars_03(char *line, t_vec *vec)
 	}
 	if (pi.state == word)
 	{
-		fstr_add_char(&str, '\0');
-		fvec_add_str(pi.v, &str);
+		fvec_close_add_str(pi.v, &str);
 		fstr_reset(&str);
 	}
-	free(line);
 	fstr_destroy(&str);
 }
 
@@ -192,14 +186,12 @@ void token_pipe(t_pi *pi, t_str *str)
 {
 	if (str->s[0])
 	{
-		fstr_add_char(str, '\0');
-		fvec_add_str(pi->v, str);
+		fvec_close_add_str(pi->v, str);
 		fstr_reset(str);
 	}
 	pi->state = pipes;
 	fstr_add_char(str, *pi->line);
-	fstr_add_char(str, '\0');
-	fvec_add_str(pi->v, str);
+	fvec_close_add_str(pi->v, str);
 	fstr_reset(str);
 }
 
@@ -236,8 +228,7 @@ void token_space(t_pi *pi, t_str *str)
 			, pi->line, str->s );
 	if (str->s[0])
 	{
-		fstr_add_char(str, '\0');
-		fvec_add_str(pi->v, str);
+		fvec_close_add_str(pi->v, str);
 		fstr_reset(str);
 	}
 }

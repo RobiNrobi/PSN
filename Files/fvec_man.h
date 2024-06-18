@@ -15,6 +15,7 @@ typedef struct s_fvec
 }	t_vec;
 
 int		fvec_add_str(t_vec *vec, t_str* str);
+int		fvec_close_add_str(t_vec *vec, t_str* str);
 int		fvec_copy(t_vec *dest, t_vec *orig);
 int		fvec_copy_to_new(t_vec *dest, t_vec *orig);
 void	fvec_destroy(t_vec *vec);

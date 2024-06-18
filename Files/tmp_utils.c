@@ -20,8 +20,7 @@ t_vec *expand_path(t_vec *v)
 			fstr_add_char(&ts, *path);
 		else
 		{
-			fstr_add_char(&ts, '\0');
-			fvec_add_str(v, &ts);
+			fvec_close_add_str(v, &ts);
 			fstr_reset(&ts);
 		}
 		++path;

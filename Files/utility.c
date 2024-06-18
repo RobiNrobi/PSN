@@ -38,6 +38,13 @@ int is_bash_metachar(int ch)
 	return (0);
 }
 
+int is_quotes(int ch)
+{
+	if ('"' == ch || '\'' == ch)
+		return (1);
+	return (0);
+}
+
 void	*my_calloc(size_t num, size_t size)
 {
 	fprintf( tracciato, "my_calloc(%lu, %lu)\n", num, size );
