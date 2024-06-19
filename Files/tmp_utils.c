@@ -1,4 +1,5 @@
 #include "tmp_utils.h"
+#include "utility.h"
 #include <stdlib.h>
 
 //TODO: remove the following
@@ -46,3 +47,42 @@ t_vec *expand_path(t_vec *v)
 // 	default: return "unknown"; break;
 // 	}
 // }
+
+int is_quote_or_pipe(int ch)
+{
+	return (is_any_of(ch, "|\"'"));
+}
+
+/*
+	se virgolette doppie
+		se virgolette doppie aperte
+			chiudi virgolette doppie
+		altrimenti
+			se virgolette singole chiuse
+				apri virgolette doppie
+	altrimenti
+		se virgolette singole
+			se virgolette singole aperte
+				chiudi virgolette singole
+			altrimenti
+				se virgolette doppie chiuse
+					apri virgolette singole
+*/
+int switch_quo(int ch, int *dquo, int *squo)
+{
+	if ('"' == ch)
+	{
+		if (*dquo)
+			*dquo = 0;
+		else if (!*squo)
+			*dquo = 1;
+	}
+	else if ('\'' == ch)
+	{
+		if (*squo)
+			*squo = 0;
+		else if (!*dquo)
+			*squo = 1;
+	}
+	return (*squo | *dquo);
+}

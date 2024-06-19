@@ -14,6 +14,22 @@ int ANSI_OSMENAJ_isalnum(int ch)
 	return (0);
 }
 
+int is_any_of(int ch, char const * const s)
+{
+	int	i;
+
+	if (!s)
+		return (0);
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == (char)ch)
+			return (1);
+		++i;
+	}
+	return (0);
+}
+
 /*
 ** According to the Bash reference manual, a metacharacter is:
 ** a character that, when unquoted, separates words. A metacharacter is a
@@ -35,13 +51,6 @@ int is_bash_metachar(int ch)
 			return (1);
 		++i;
 	}
-	return (0);
-}
-
-int is_quotes(int ch)
-{
-	if ('"' == ch || '\'' == ch)
-		return (1);
 	return (0);
 }
 

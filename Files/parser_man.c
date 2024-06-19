@@ -1,5 +1,6 @@
 #include "fvec2_man.h"
 #include "parser_man.h"
+#include "tmp_utils.h"
 #include "token_man.h"
 #include "utility.h"
 #include <stdlib.h>
@@ -113,24 +114,29 @@ int pars_parsline(char *line)
 
 void pars_pars_on_pipes(t_vec *tv, char *line)
 {
-	int		in_quotes;
+	int		in_dquotes;
+	int		in_squotes;
 	t_str	tstr;
 
-	in_quotes = 0;
+	in_dquotes = 0;
+	in_squotes = 0;
 	fstr_init(&tstr, 0);
 	while (*line)
 	{
-		if (is_quotes(*line))
+		if (is_quote_or_pipe(*line))
 		{
-			if (in_quotes)
-				in_quotes = 0;
+			if ('|' == *line)
+			{
+				if (in_dquotes || in_squotes)
+					fstr_add_char(&tstr, *line);
+				else
+				{
+					fvec_close_add_str(tv, &tstr);
+					fstr_reset(&tstr);
+				}
+			}
 			else
-				in_quotes = 1;
-		}
-		if ('|' == *line && !in_quotes)
-		{
-			fvec_close_add_str(tv, &tstr);
-			fstr_reset(&tstr);
+				switch_quo(*line, &in_squotes, &in_dquotes);
 		}
 		else
 			fstr_add_char(&tstr, *line);

@@ -7,8 +7,8 @@
 #include <stdlib.h>
 
 int		ANSI_OSMENAJ_isalnum(int ch);
+int		is_any_of(int ch, char const *const s);
 int		is_bash_metachar(int ch);
-int		is_quotes(int ch);
 void	*my_calloc(size_t num, size_t size);
 int		my_isalnum(int ch);
 int		my_isalpha(int ch);

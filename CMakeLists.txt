@@ -51,7 +51,7 @@ add_executable(MiniShell_01
 if (${CMAKE_C_COMPILER_ID} STREQUAL GNU)
 	message("Sanitize address DISABLED")
 	target_compile_options(MiniShell_01 PRIVATE $<$<COMPILE_LANGUAGE:C>:
-		-O2-Iminilibx-linux
+		-O2
 		-g3
 		-Wall
 		-Wconversion
