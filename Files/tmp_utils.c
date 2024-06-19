@@ -50,6 +50,7 @@ t_vec *expand_path(t_vec *v)
 
 int is_quote_or_pipe(int ch)
 {
+	fprintf( tracciato, "is_quote_or_pipe(%c)\n", ch );
 	return (is_any_of(ch, "|\"'"));
 }
 
@@ -70,6 +71,7 @@ int is_quote_or_pipe(int ch)
 */
 int switch_quo(int ch, int *dquo, int *squo)
 {
+	fprintf( tracciato, "switch_quo(%c, %d, %d)\n", ch, *dquo, *squo );
 	if ('"' == ch)
 	{
 		if (*dquo)

@@ -114,6 +114,7 @@ int pars_parsline(char *line)
 
 void pars_pars_on_pipes(t_vec *tv, char *line)
 {
+	fprintf( tracciato, "pars_pars_on_pipes(t_vec*, %s)\n", line );
 	int		in_dquotes;
 	int		in_squotes;
 	t_str	tstr;

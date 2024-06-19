@@ -151,3 +151,62 @@ int my_strlen(char const *const s)
 		++i;
 	return (i);
 }
+
+/*
+** Emulate strcmp() from the standard library <string.h>
+** From man strcmp:
+** int strcmp(const char *s1, const char *s2)
+** ...compares the two strings s1 and s2... The comparison is done using
+** unsigned characters.
+** strcmp() returns an integer indicating the result of the comparison, as
+** follows:
+** • 0, if the s1 and s2 are equal;
+** • a negative value if s1 is less than s2;
+** • a positive value if s1 is greater than s2.
+*/
+int my_strcmp(char const *const s1, char  const* const s2)
+{
+	fprintf( tracciato, "my_strcmp(%s, %s)\n", s1, s2 );
+	unsigned char	ss1;
+	unsigned char	ss2;
+	int				i;
+
+	if (!s1 | !s2)
+		return (0);
+	i = 0;
+	ss1 = (unsigned char)s1[i];
+	ss2 = (unsigned char)s2[i];
+	while (s1[i] && s2[i])
+	{
+		ss1 = (unsigned char)s1[i];
+		ss2 = (unsigned char)s2[i];
+		if (ss1 != ss2)
+			return (ss1 - ss2);
+		++i;
+	}
+	return (ss1 - ss2);
+}
+
+char *my_strjoin(char const *const s1, char  const* const s2)
+{
+	fprintf( tracciato, "my_strjoin(%s, %s)\n", s1, s2 );
+	char	*tot;
+	int		i;
+	int		k;
+
+	if (!s1 || !s2)
+		return (NULL);
+	tot = malloc(sizeof(char) * (size_t)(my_strlen(s1) + my_strlen(s2) + 1));
+	i = 0;
+	while (s1[i])
+	{
+		tot[i] = s1[i];
+		++i;
+	}
+	k = 0;
+	while (s2[k])
+		tot[i++] = s2[k++];
+	tot[i] = '\0';
+	fprintf( tracciato, "...my_strjoin()\tAbout to return: %s\n", tot );
+	return (tot);
+}
