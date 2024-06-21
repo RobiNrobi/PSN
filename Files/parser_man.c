@@ -3,6 +3,7 @@
 #include "tmp_utils.h"
 #include "token_man.h"
 #include "utility.h"
+#include "command_v1.h"
 #include <stdlib.h>
 
 //TODO: remove the following
@@ -58,12 +59,11 @@ int	pars_get_words_seq(t_vec *vec, char *line)
 	return (1);
 }
 
-int pars_parsline(char *line)
+int pars_parsline(char *line, t_vec2 *cmds)
 {
 	fprintf( tracciato, "parsline()\n" );
 	t_vec	seq;
 	t_vec	seq2;
-	t_vec2	cmds;
 
 	//TODO: restore readline and delete the following lines:
 	line = read_a_line("Viva Ansi!> ");
@@ -76,13 +76,15 @@ int pars_parsline(char *line)
 	//	add_history(line);
 	if (!line)
 		return (0);
-	if (token_error_quotes(line))
+	if (*line == '|' || token_error_quotes(line))
 	{
+		if (*line == '|')
+			display_error_syntax(" `|'");
+		else
+			display_error("Error: Unclosed quotes!\n");
 		free(line);
-		printf("Error: Unclosed quotes!\n");
 		return (0);
 	}
-
 	// NOTE: VARIATION FROM 2024-06-18
 	// t_vec2 instead of t_vec
 	// 'line' is split into chunks on pipes ('|') and only later, t_vec by
@@ -93,22 +95,22 @@ int pars_parsline(char *line)
 
 	int	i;
 	i = 0;
-	fvec2_init(&cmds, 0);
 	fvec_init(&seq2, 0);
 	while (seq.size > i)
 	{
 		token_pars_03(seq.tstr[i].s, &seq2);
-		fvec2_add_vec(&cmds, &seq2);
+		fvec2_add_vec(cmds, &seq2);
 		fvec_reset(&seq2);
 		++i;
 	}
-	fvec2_print_vec2(&cmds);
+	free(line);
 	// pars_get_words_seq(&seq, line);
 	// fvec_print_vec(&seq);
 	fvec_destroy(&seq2);
 	fvec_destroy(&seq);
-	fvec2_destroy(&cmds);
-	free(line);
+	pars_check_syntax(cmds);
+	fvec2_print_vec2(cmds);
+	// fvec2_destroy(&cmds);
 	return (1);
 }
 
@@ -117,32 +119,74 @@ void pars_pars_on_pipes(t_vec *tv, char *line)
 	fprintf( tracciato, "pars_pars_on_pipes(t_vec*, %s)\n", line );
 	int		in_dquotes;
 	int		in_squotes;
+	int		pipe;
 	t_str	tstr;
 
 	in_dquotes = 0;
 	in_squotes = 0;
+	pipe = 0;
 	fstr_init(&tstr, 0);
 	while (*line)
 	{
-		if (is_quote_or_pipe(*line))
+		if (*line == '\"' || *line == '\'')
+			switch_quo(*line, &in_squotes, &in_dquotes);
+		if (*line == '|')
 		{
-			if ('|' == *line)
+			if (in_dquotes || in_squotes)
 			{
-				if (in_dquotes || in_squotes)
-					fstr_add_char(&tstr, *line);
-				else
-				{
-					fvec_close_add_str(tv, &tstr);
-					fstr_reset(&tstr);
-				}
+				pipe = 0;
+				fstr_add_char(&tstr, *line);
 			}
 			else
-				switch_quo(*line, &in_squotes, &in_dquotes);
+			{
+				pipe = 1;
+				fstr_add_char(&tstr, *line);
+				fvec_close_add_str(tv, &tstr);
+				fstr_reset(&tstr);
+			}
 		}
 		else
+		{
 			fstr_add_char(&tstr, *line);
+			if (!my_isspace(*line))
+				pipe = 0;
+		}
 		++line;
 	}
-	fvec_close_add_str(tv, &tstr);
+	if (pipe)
+	{
+		line = read_a_line("> ");
+		if (token_error_quotes(line))
+			exit(EXIT_FAILURE);
+		pars_pars_on_pipes(tv, line);
+		free(line);
+	}
+	if (tstr.s[0])
+		fvec_close_add_str(tv, &tstr);
 	fstr_destroy(&tstr);
+}
+
+void pars_check_syntax(t_vec2 *cmds)
+{
+	t_vec seq;
+	int i;
+	int j;
+
+	j = 0;
+	i = 0;
+	while (cmds->size > i)
+	{	seq = cmds->tvec[i];
+		while (seq.size > j)
+		{
+			if (is_redirect(seq.tstr[j]) && seq.tstr[j + 1].state != word)
+			{
+				display_error_syntax(seq.tstr[j + 1].s);
+				fvec2_destroy(cmds);
+				closef();
+				exit(EXIT_FAILURE);
+			}
+			j++;
+		}
+		i++;
+	}
 }

@@ -1,16 +1,30 @@
 #ifndef FSTR_MAN_H
 #define FSTR_MAN_H
 
-
 #ifndef DEFAULT_STR_SIZE
 # define DEFAULT_STR_SIZE 15
 #endif
+
+typedef enum e_metachar
+{
+	other,
+	dq,
+	sq,
+	less,
+	lessless,
+	great,
+	greatgreat,
+	pipes,
+	word,
+	dollar,
+}	t_mc;
 
 typedef struct s_fstr
 {
 	int		size;
 	int		capacity;
 	char	*s;
+	t_mc	state;
 }	t_str;
 
 void	fstr_add_char(t_str *str, char c);

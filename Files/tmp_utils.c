@@ -27,7 +27,6 @@ t_vec *expand_path(t_vec *v)
 		++path;
 	}
 	fstr_destroy(&ts);
-	fvec_print_vec(v);
 	return (v);
 }
 
@@ -47,6 +46,15 @@ t_vec *expand_path(t_vec *v)
 // 	default: return "unknown"; break;
 // 	}
 // }
+
+int is_redirect(t_str tstr)
+{
+	if (tstr.state == less || tstr.state == less 
+			|| tstr.state == great || tstr.state == greatgreat)
+		return (1);
+	else
+		return (0);
+}
 
 int is_quote_or_pipe(int ch)
 {

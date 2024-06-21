@@ -210,3 +210,20 @@ char *my_strjoin(char const *const s1, char  const* const s2)
 	fprintf( tracciato, "...my_strjoin()\tAbout to return: %s\n", tot );
 	return (tot);
 }
+void display_error_syntax(char *s)
+{
+	write(2, "Syntax error near unexpected token ", 36);
+	write(2, "'", 1);
+	write(2, s, 2);
+	write(2, "'", 1);
+	write(1, "\n", 1);
+}
+void display_error(char *s)
+{
+	int i;
+
+	i = my_strlen(s);
+	write(2, s, i);
+	write(1, "\n", 1);
+}
+

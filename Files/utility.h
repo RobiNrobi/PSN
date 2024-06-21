@@ -1,12 +1,15 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include "unistd.h"
 /*
 ** stdlib.h needed for size_t
 */
 #include <stdlib.h>
 
 int		ANSI_OSMENAJ_isalnum(int ch);
+void	display_error_syntax(char *s);
+void 	display_error(char *s);
 int		is_any_of(int ch, char const *const s);
 int		is_bash_metachar(int ch);
 void	*my_calloc(size_t num, size_t size);

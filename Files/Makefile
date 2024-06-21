@@ -98,6 +98,8 @@ BASE_SOURCES := $(COMMON_SOURCES)	\
 					minishell.c		\
 					parser_man.c	\
 					token_man.c		\
+					tmp_utils.c		\
+					command_v1.c	\
 					utility.c
 
 BASE_OBJECTS := $(BASE_SOURCES:.c=.o)

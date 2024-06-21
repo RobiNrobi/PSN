@@ -38,13 +38,17 @@ int execute_command(const char *name, char * const argl[], char * const envp[])
 	t_vec	path;
 	int		i;
 	char	*cmd;
+	char	*tmp;
 
 	fvec_init(&path, 0);
 	expand_path(&path);
 	i = 0;
 	while (path.size > i)
 	{
-		cmd = my_strjoin(path.tstr[i].s, name);
+
+		tmp = my_strjoin(path.tstr[i].s, "/");
+		cmd = my_strjoin(tmp, name);
+		free(tmp);
 		if (!access(cmd, X_OK))
 			if (-1 == execve(cmd, argl, envp))
 				perror(cmd);
@@ -53,4 +57,68 @@ int execute_command(const char *name, char * const argl[], char * const envp[])
 	}
 	fvec_destroy(&path);
 	return (1);
+}
+void take_commands(t_vec *cmd, char **envp)
+{
+	int i;
+	int j;
+	int len;
+	char **args;
+
+	i = 0;
+	while (cmd->size > i)
+	{
+		if (is_redirect(cmd->tstr[i]))
+			i++;
+		else if (cmd->tstr[i].state == word)
+			len++;
+		i++;		
+	}
+	args = (char **)malloc(len * sizeof(char *) + 1);
+	i = 0;
+	j = 0;
+	while (cmd->size > i)
+	{
+		if (is_redirect(cmd->tstr[i]))
+			i++;
+		else if (cmd->tstr[i].state == word)
+		{
+			args[j] = my_strdup(cmd->tstr[i].s);
+			j++;
+		}
+		i++;
+	}
+	args[j] = NULL;
+	execute_command(args[0], args, envp);
+}
+
+char	*my_strdup(const char *str)
+{
+	int		nume;
+	char	*cpy;
+
+	nume = my_strlen(str) + 1;
+	cpy = (char *)malloc(nume * sizeof(char));
+	if (!cpy)
+	{
+		free(cpy);
+		return (NULL);
+	}
+	my_memcpy(cpy, str, nume);
+	return ((char *)cpy);
+}
+
+void	*my_memcpy(void *dest, const void *src, int n)
+{
+	int			i;
+
+	if (!dest && !src)
+		return (0);
+	i = 0;
+	while (i < n)
+	{
+		((char *)dest)[i] = ((char *)src)[i];
+		i++;
+	}
+	return (dest);
 }

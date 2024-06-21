@@ -1,5 +1,6 @@
 #include "minishell.h"
 #include "parser_man.h"
+#include "command_v1.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -38,11 +39,20 @@ int main(int argc, char *argv[], char **envp)
 int minishell(char **envp)
 {
 	fprintf( tracciato, "minishell()\n" );
-	(void)envp;
+
+	int		i;
 	char	*line;
+	t_vec2	vec2;
 
 	line = NULL;
-	if (!pars_parsline(line))
+	i = 0;
+	fvec2_init(&vec2, 0);
+	if (!pars_parsline(line, &vec2))
 		return (0);
+	while (vec2.size > i)
+	{
+		take_commands(&vec2.tvec[i], envp);
+		i++;
+	}
 	return (1);
 }

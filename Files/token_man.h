@@ -3,25 +3,10 @@
 
 #include "fvec_man.h"
 
-typedef enum e_metachar
-{
-	other,
-	dq,
-	sq,
-	less,
-	lessless,
-	great,
-	greatgreat,
-	pipes,
-	word,
-	dollar,
-}	t_mc;
-
 typedef struct s_pars_info
 {
 	t_vec	*v;
 	char	*line;
-	t_mc	state;
 }	t_pi;
 
 void	token_dollar(t_pi *pi, t_str *str);

@@ -34,6 +34,7 @@ int fstr_copy(t_str *dest, t_str const * const orig)
 		return (0);
 	dest->capacity = orig->capacity;
 	dest->size = orig->size;
+	dest->state = orig->state;
 	i = 0;
 	while (dest->capacity > i)
 	{
@@ -52,6 +53,7 @@ int fstr_copy_to_new(t_str *dest, const t_str * const orig)
 		return (0);
 	dest->capacity = orig->capacity;
 	dest->size = orig->size;
+	dest->state = orig->state;
 	dest->s = malloc(sizeof(char) * (size_t)orig->capacity);
 	i = 0;
 	while (dest->capacity > i)
@@ -110,6 +112,7 @@ char *fstr_init(t_str *str, int cap)
 		cap = DEFAULT_STR_SIZE;
 	str->size = 0;
 	str->capacity = cap;
+	str->state = other;
 	str->s = my_calloc((size_t)(cap), sizeof(char));
 	return (str->s);
 }
@@ -197,6 +200,7 @@ int fstr_reset(t_str *str)
 	if (!str || !str->s)
 		return (0);
 	i = 0;
+	str->state = other;
 	while (str->size > i)
 	{
 		str->s[i] = '\0';
