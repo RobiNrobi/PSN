@@ -1,4 +1,6 @@
 #include "utility.h"
+#include <errno.h>			// TODO: remove if errno not set in strdup
+#include <stdlib.h>
 
 //TODO: remove the following
 #include <stdio.h>
@@ -12,6 +14,28 @@ int ANSI_OSMENAJ_isalnum(int ch)
 		&& ch != '"' && ch != '\'' && ch != '$')
 		return (1);
 	return (0);
+}
+
+void display_error(char *s)
+{
+	fprintf( tracciato, "display_error(%s)\n", s );
+	int i;
+
+	i = my_strlen(s);
+	// WARNING: Possiamo usare sia printf() che perror()...
+	write(2, s, (size_t)i);
+	write(1, "\n", 1);
+}
+
+void display_error_syntax(char *s)
+{
+	fprintf( tracciato, "display_error_syntax(%s)\n", s );
+	// WARNING: Possiamo usare sia printf() che perror()...
+	write(2, "Syntax error near unexpected token ", 36);
+	write(2, "'", 1);
+	write(2, s, 2);
+	write(2, "'", 1);
+	write(1, "\n", 1);
 }
 
 int is_any_of(int ch, char const * const s)
@@ -123,7 +147,40 @@ int my_isupper(int ch)
 		return (1);
 	return (0);
 }
+/*
+** emulates memcpy() from <string.h>
+** From man memcpy():
+** ------------------
+** void *memcpy(void dest[restrict .n], const void src[restrict .n], size_t n);
+** The memcpy() function copies n bytes from memory area src to  memory area
+** dest.
+** The memory areas must not overlap.
+** Use memmove(3) if the memory areas do overlap.
+** From https://en.cppreference.com/w/c/string/byte/memcpy :
+** ---------------------------------------------------------
+** Copies count characters from the object pointed to by src to the object
+** pointed to by dest.
+** Both objects are interpreted as arrays of unsigned char.
+** The behavior is undefined if access occurs beyond the end of the dest array.
+** If the objects overlap, the behavior is undefined.
+** The behavior is undefined if either dest or src is an invalid or null
+** pointer.
+** Returns a copy of dest.
+*/
+void	*my_memcpy(void *dest, const void *src, int n)
+{
+	int	i;
 
+	if (!dest || !src)
+		return (0);
+	i = 0;
+	while (n > i)
+	{
+		((unsigned char *)dest)[i] = ((unsigned char *)src)[i];
+		i++;
+	}
+	return (dest);
+}
 void *my_memset(void *dest, int ch, size_t count)
 {
 	fprintf( tracciato, "my_memset(void*, %d, %lu)\n", ch, count );
@@ -137,19 +194,6 @@ void *my_memset(void *dest, int ch, size_t count)
 	while (count > i)
 		p[i++] = uc;
 	return (dest);
-}
-
-int my_strlen(char const *const s)
-{
-	fprintf( tracciato, "my_strlen(%s)\n", s );
-	int i;
-
-	if (!s)
-		return (0);
-	i = 0;
-	while (s[i])
-		++i;
-	return (i);
 }
 
 /*
@@ -187,6 +231,49 @@ int my_strcmp(char const *const s1, char  const* const s2)
 	return (ss1 - ss2);
 }
 
+/*
+** emulates strdup() from string.h
+** Fom man strdup:
+** ---------------
+** char *strdup(const char *s);
+** The strdup() function returns a pointer to a new string which is a duplicate
+** of the string s.
+** Memory for the new string is obtained with malloc(), and can be freed with
+** free().
+** On success, the strdup() function returns a pointer to the duplicated string.
+** It returns NULL if insufficient memory was available, with errno set to
+** indicate the error.
+** ERRORS: ENOMEM Insufficient memory available to allocate duplicate string.
+
+** From https://en.cppreference.com/w/c/string/byte/strdup :
+** ---------------------------------------------------------
+** Returns a pointer to a null-terminated byte string, which is a duplicate of
+** the string pointed to by src.
+** The space for the new string is obtained as if the malloc was invoked.
+** The returned pointer must be passed to free to avoid a memory leak.
+** If an error occurs, a null pointer is returned and errno might be set.
+** Return value: A pointer to the newly allocated string, or a null pointer if
+**               an error occurred.
+*/
+char	*my_strdup(const char *str)
+{
+	int		nume;
+	char	*cpy;
+
+	nume = my_strlen(str) + 1;
+	cpy = (char *)malloc((size_t)nume * sizeof(char));
+	if (!cpy)
+	{
+		// WARNING: add the following to match strdup?
+		errno = ENOMEM;
+		// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+		free(cpy);			// FIXME: you cannot free(NULL) !!!!
+		return (NULL);
+	}
+	my_memcpy(cpy, str, nume);
+	return ((char *)cpy);
+}
+
 char *my_strjoin(char const *const s1, char  const* const s2)
 {
 	fprintf( tracciato, "my_strjoin(%s, %s)\n", s1, s2 );
@@ -210,20 +297,16 @@ char *my_strjoin(char const *const s1, char  const* const s2)
 	fprintf( tracciato, "...my_strjoin()\tAbout to return: %s\n", tot );
 	return (tot);
 }
-void display_error_syntax(char *s)
+
+int my_strlen(char const *const s)
 {
-	write(2, "Syntax error near unexpected token ", 36);
-	write(2, "'", 1);
-	write(2, s, 2);
-	write(2, "'", 1);
-	write(1, "\n", 1);
-}
-void display_error(char *s)
-{
+	fprintf( tracciato, "my_strlen(%s)\n", s );
 	int i;
 
-	i = my_strlen(s);
-	write(2, s, i);
-	write(1, "\n", 1);
+	if (!s)
+		return (0);
+	i = 0;
+	while (s[i])
+		++i;
+	return (i);
 }
-

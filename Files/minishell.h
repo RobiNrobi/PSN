@@ -2,8 +2,7 @@
 #define MINISHELL_H
 
 #include "fvec2_man.h"
-#include "env/env.h"
-
+#include "env/env.h"  // spostare nel file .c?
 
 typedef struct s_global_info
 {

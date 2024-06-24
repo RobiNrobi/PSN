@@ -79,30 +79,36 @@ COMMON_DEPS :=
 
 COMMON_SOURCES := 
 
-BASE_DEPS := $(COMMON_DEPS)		\
-				../_extra.h		\
-				fstr_man.h		\
-				fvec_man.h		\
-				fvec2_man.h		\
-				minshell.h		\
-				parser_man.h	\
-				token_man.h		\
-				utility.h		\
-				env/env.h
+BASE_DEPS := $(COMMON_DEPS)    \
+				../_extra.h    \
+				builtin_v1.h   \
+				command_v1.h   \
+				fstr_man.h     \
+				fvec_man.h     \
+				fvec2_man.h    \
+				minshell.h     \
+				parser_man.h   \
+				pipeline_man.h \
+				tmp_utils      \
+				token_man.h    \
+				utility.h      \
+                env/env.h
 
 
-BASE_SOURCES := $(COMMON_SOURCES)	\
-					../_extra.c		\
-					fstr_man.c		\
-					fvec_man.c		\
-					fvec2_man.c		\
-					minishell.c		\
-					parser_man.c	\
-					token_man.c		\
-					tmp_utils.c		\
-					command_v1.c	\
-					utility.c		\
-					env/env.c		\
+BASE_SOURCES := $(COMMON_SOURCES)   \
+					../_extra.c     \
+					builtin_v1.c    \
+					command_v1.c    \
+					fstr_man.c      \
+					fvec_man.c      \
+					fvec2_man.c     \
+					minishell.c     \
+					parser_man.c    \
+					pipeline_man.c  \
+					tmp_utils.c     \
+					token_man.c     \
+					utility.c       \
+					env/env.c       \
 					env/env_utils.c
 
 BASE_OBJECTS := $(BASE_SOURCES:.c=.o)

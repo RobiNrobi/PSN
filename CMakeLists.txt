@@ -18,15 +18,19 @@ add_executable(MiniShell_01
 	_extra.h               _extra.c
 	Files/builtin_v1.h     Files/builtin_v1.c
 	Files/command_v1.h     Files/command_v1.c
-	Files/execute_bunch.c
+	                       Files/execute_bunch.c
 	Files/fstr_man.h       Files/fstr_man.c
 	Files/fvec_man.h       Files/fvec_man.c
 	Files/fvec2_man.h	   Files/fvec2_man.c
 	Files/minishell.h      Files/minishell.c
 	Files/parser_man.h     Files/parser_man.c
+	Files/pipeline_man.h   Files/pipeline_man.c
 	Files/tmp_utils.h      Files/tmp_utils.c
 	Files/token_man.h      Files/token_man.c
+
 	Files/utility.h        Files/utility.c
+	Files/env/env.h        Files/env/env.c
+						   Files/env/env_utils.c
 )
 
 

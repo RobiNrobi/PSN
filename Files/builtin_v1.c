@@ -17,7 +17,7 @@ extern FILE* tracciato;
 **     env
 **     exit
 */
-int is_builtin_cmd(char const *const s)
+int built_is_builtin_cmd(char const *const s)
 {
 	fprintf( tracciato, "is_builtin_cmd(%s)\n", s );
 	if (!my_strcmp(s, "echo")      || !my_strcmp(s, "cd")

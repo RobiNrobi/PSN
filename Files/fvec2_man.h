@@ -2,8 +2,7 @@
 #define FVEC2_MAN_H
 
 #include "fvec_man.h"
-#include "env/env.h"
-
+#include "env/env.h"  // spostare nel file .c?
 
 #ifndef DEFAULT_VEC2_SIZE
 # define DEFAULT_VEC2_SIZE 15

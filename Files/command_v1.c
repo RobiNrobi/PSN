@@ -2,10 +2,11 @@
 #include "fvec_man.h"
 #include "tmp_utils.h"
 #include "utility.h"
+#include "pipeline_man.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "env/env.h"
-
 
 //TODO: remove the following
 #include <stdio.h>
@@ -34,7 +35,8 @@ extern FILE* tracciato;
 ** On success, execve() does not return, on error -1 is returned, and errno is
 ** set to indicate the error.
 */
-int execute_command(const char *name, char **argl, char **envp, t_env *env)
+//int execute_command(const char *name, char **argl, char **envp, t_env *env)
+int comm_execute_cmd(const char *name, char *argl[], char *envp[], /*da eliminare*/ t_env *env)
 {
 	fprintf( tracciato, "execute_command(%s, char**, char**)\n", name );
 	t_vec	path;
@@ -48,7 +50,7 @@ int execute_command(const char *name, char **argl, char **envp, t_env *env)
 	expand_path(&path);
 	i = 0;
 	// printf("%s\n", name);
-	if (check_builtins((char *)name) > 0)
+	if (check_builtins((char *)name) > 0) // spostare
 	{
 		printf("Inizio builtin: %s\n", name);
 		if(exec_builtins((char *)name, argl, envp) == -1)
@@ -68,7 +70,7 @@ int execute_command(const char *name, char **argl, char **envp, t_env *env)
 		// printf("%s\n", cmd);
 		if (!access(cmd, X_OK))
 		{
-			if(-1 == execve(cmd, argl, envp))
+			if (-1 == execve(cmd, argl, envp))
 				perror(cmd);
 		}
 		free(cmd);
@@ -78,12 +80,13 @@ int execute_command(const char *name, char **argl, char **envp, t_env *env)
 	return (1);
 }
 
+
 /*
 Funzione take_commands: Questa funzione prepara un array di argomenti da passare a execute_command basandosi su un vettore di comandi (t_vec).
 Filtra i comandi per redirezionamenti e parole, allocando dinamicamente spazio per gli argomenti e copiandoli. Alla fine, chiama execute_command
 con il primo argomento come nome del comando.
 */
-void take_commands(t_vec *cmd, char **envp, t_env *env)
+void comm_take_cmds(t_vec *cmd, char **envp, /*da eliminare*/ t_env *env)
 {
 	int i;
 	int j;
@@ -100,7 +103,7 @@ void take_commands(t_vec *cmd, char **envp, t_env *env)
 			len++;
 		i++;		
 	}
-	args = (char **)malloc(len * sizeof(char *) + 1);
+	args = (char **)malloc((size_t)len * sizeof(char *) + 1);
 	i = 0;
 	j = 0;
 	while (cmd->size > i)
@@ -115,7 +118,64 @@ void take_commands(t_vec *cmd, char **envp, t_env *env)
 		i++;
 	}
 	args[j] = NULL;
-	execute_command(args[0], args, envp, env);
+	comm_execute_cmd(args[0], args, envp, env);
+} // Potential leak of memory pointed to by args
+
+/*
+** comm_parse_cmd() fill most of the t_pi properties.
+*/
+void comm_parse_cmd(t_pi *pi)
+{
+	int i;
+	i = 0;
+	while (pi->cmds->size > i)
+	{
+		// CASE <
+		if (my_strcmp(pi->cmds[i].tstr->s, "<"))
+		{
+			if (i == pi->cmds->size - 1)
+			{
+				fprintf(stderr, "Error: expected filename after '<'\n");
+				exit(EXIT_FAILURE);
+			}
+			pi->infile = pi->cmds[i + 1].tstr->s;
+		}
+
+		// CASE >
+		else if (my_strcmp(pi->cmds[i].tstr->s, ">"))
+		{
+			if (i == pi->cmds->size - 1)
+			{
+				fprintf(stderr, "Error: expected filename after '>'\n");
+				exit(EXIT_FAILURE);
+			}
+			pi->outfile = pi->cmds[i + 1].tstr->s;
+		}
+
+		// CASE >>
+		else if (my_strcmp(pi->cmds[i].tstr->s, ">>"))
+		{
+			if (i == pi->cmds->size - 1)
+			{
+				fprintf(stderr, "Error: expected filename after '>>'\n");
+				exit(EXIT_FAILURE);
+			}
+			pi->outfile = pi->cmds[i + 1].tstr->s;
+			pi->append = 1;
+		}
+
+		// CASE <<
+		else if (my_strcmp(pi->cmds[i].tstr->s, "<<"))
+		{
+			if (i == pi->cmds->size - 1)
+			{
+				fprintf(stderr, "Error: expected delimiter after '<<'\n");
+				exit(EXIT_FAILURE);
+			}
+			pi->here_doc = pi->cmds[i + 1].tstr->s;
+		}
+		++i;
+	}
 }
 
 static int exec_echo(char *cmd, char **argl)
@@ -130,37 +190,6 @@ static int exec_echo(char *cmd, char **argl)
 		}
 	printf("\n");
 	return(0);
-}
-
-char	*my_strdup(const char *str)
-{
-	int		nume;
-	char	*cpy;
-
-	nume = my_strlen(str) + 1;
-	cpy = (char *)malloc(nume * sizeof(char));
-	if (!cpy)
-	{
-		free(cpy);
-		return (NULL);
-	}
-	my_memcpy(cpy, str, nume);
-	return ((char *)cpy);
-}
-
-void	*my_memcpy(void *dest, const void *src, int n)
-{
-	int			i;
-
-	if (!dest && !src)
-		return (0);
-	i = 0;
-	while (i < n)
-	{
-		((char *)dest)[i] = ((char *)src)[i];
-		i++;
-	}
-	return (dest);
 }
 
 int	check_builtins(char *cmd)
@@ -244,15 +273,17 @@ int	exec_exit(char *cmd)
 
 int exec_cd(char *cmd, char **ag, char **env)
 {
-	t_env	*ev;
-	char	cwd[1024];
-	char	owd[1024];
+	(void)cmd;
+	(void)ag;
+	(void)env;
+//	t_env	*ev;
+//	char	cwd[1024];
+//	char	owd[1024];
 
-	env = start_env(env);
-	if(arg[0])
-	{
-		if(chdir)
-	}
-
-
+//	env = start_env(env);
+//	if(arg[0])
+//	{
+//		if(chdir)
+//	}
+	return (0);
 }

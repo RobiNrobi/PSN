@@ -19,8 +19,10 @@ int		my_isdigit(int ch);
 int		my_islower(int ch);
 int		my_isspace(int ch);
 int		my_isupper(int ch);
+void	*my_memcpy(void *dest, const void *src, int n);
 void	*my_memset(void *dest, int ch, size_t count);
 int		my_strcmp(char const *const s1, char const *const s2);
+char	*my_strdup(const char *str);
 char	*my_strjoin(char const *const s1, char const *const s2);
 int		my_strlen(char const *const s);
 

@@ -1,6 +1,5 @@
 #ifndef ENV_H
 #define ENV_H
-#include "../fvec_man.h"
 
 typedef struct s_env_elem
 {

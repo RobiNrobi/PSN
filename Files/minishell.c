@@ -2,7 +2,6 @@
 #include "parser_man.h"
 #include "command_v1.h"
 #include "env/env.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -45,19 +44,21 @@ int minishell(char **envp)
 	int		i;
 	char	*line;
 	t_vec2	vec2;
-	t_env	*env;
+	t_env	*env; // eliminare
 
-	env = start_env(envp);
+	env = start_env(envp); // eliminare
 	line = NULL;
-	i = 0;
 	fvec2_init(&vec2, 0);
-	printf("size: %d\n", vec2.size);
 	if (!pars_parsline(line, &vec2))
 		return (0);
-	while (1)
+	i = 0;
+	// SPOSTARE IN UNA FUNZIONE CHE SEGUE LO SCHEMA "execute pipeline()"
+	while (vec2.size > i)
 	{
-			take_commands(&vec2.tvec[i], envp, env);
-			break;
+		comm_take_cmds(&vec2.tvec[i], envp, env);
+		i++;
+//		take_commands(&vec2.tvec[i], envp, env);
+//		break;
 	}
 	return (1);
 }

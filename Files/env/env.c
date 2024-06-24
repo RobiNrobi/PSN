@@ -26,7 +26,7 @@ t_elem	*lst_new(char *line)
 	if (i != -1)
 	{
 		key = ft_substr(line, 0, i);
-		value = ft_substr(line, i + 1, ft_strlen(line) - i);
+		value = ft_substr(line, (unsigned)(i + 1), ft_strlen(line) - i);
 		if (!key || !value || !elem)
 			return (NULL);
 		elem->key = key;
@@ -113,7 +113,7 @@ char	*ft_substr(char const *s, unsigned int start, int len)
 		return (ft_strdup(""));
 	if (len > ft_strlen(&s[start]))
 		len = ft_strlen(&s[start]);
-	subs = (char *)malloc((len + 1) * sizeof(char));
+	subs = (char *)malloc((size_t)(len + 1) * sizeof(char));
 	if (!subs)
 		return (NULL);
 	i = 0;
@@ -154,3 +154,4 @@ char	*ft_strdup(const char *s)
 	*sdup = '\0';
 	return ((char *)s);
 }
+

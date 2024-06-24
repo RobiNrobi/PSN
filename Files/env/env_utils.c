@@ -14,7 +14,7 @@ char	**convert_array(t_env *env)
 
 	i = 0;
 	tmp = env->head;
-	arr = my_calloc(env->size + 1, sizeof(char *));
+	arr = my_calloc((size_t)(env->size + 1), sizeof(char *));
 	if (arr)
 	{
 		while (i < env->size)

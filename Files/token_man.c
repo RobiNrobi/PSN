@@ -1,14 +1,15 @@
 #include "token_man.h"
 #include "utility.h"
+#include <stdlib.h>
 
 //TODO: remove the following
 #include <stdio.h>
 extern FILE* tracciato;
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-void token_dollar(t_pi *pi, t_str *str)
+void token_dollar(t_pai *pi, t_str *str)
 {
-	fprintf( tracciato, "token_dollar(t_pi*, %s)\n", str->s );
+	fprintf( tracciato, "token_dollar(t_pai*, %s)\n", str->s );
 	char *s;
 	t_str str2;
 
@@ -63,9 +64,9 @@ int token_error_quotes(char *line)
 	return (0);
 }
 
-void token_great(t_pi *pi, t_str *str)
+void token_great(t_pai *pi, t_str *str)
 {
-	fprintf( tracciato, "token_great(t_pi*, %s)\n", str->s );
+	fprintf( tracciato, "token_great(t_pai*, %s)\n", str->s );
 	if (str->s[0])
 	{
 		fvec_close_add_str(pi->v, str);
@@ -82,9 +83,9 @@ void token_great(t_pi *pi, t_str *str)
 	fstr_reset(str);
 }
 
-void token_less(t_pi *pi, t_str *str)
+void token_less(t_pai *pi, t_str *str)
 {
-	fprintf( tracciato, "token_less(t_pi*, %s)\n", str->s );
+	fprintf( tracciato, "token_less(t_pai*, %s)\n", str->s );
 	if (str->s[0])
 	{
 		fvec_close_add_str(pi->v, str);
@@ -146,7 +147,7 @@ void token_pars_03(char *line, t_vec *vec)
 {
 	fprintf( tracciato, "token_pars_03(%s, t_vec*)\n", line );
 	t_str	str;
-	t_pi	pi;
+	t_pai	pi;
 
 	fstr_init(&str, 0);
 	pi.v = vec;
@@ -174,7 +175,7 @@ void token_pars_03(char *line, t_vec *vec)
 	fstr_destroy(&str);
 }
 
-void token_pipe(t_pi *pi, t_str *str)
+void token_pipe(t_pai *pi, t_str *str)
 {
 	if (str->s[0])
 	{
@@ -189,9 +190,9 @@ void token_pipe(t_pi *pi, t_str *str)
 
 // $ se la variabile non esiste il contenuto dal $ a separatore (spazio) o fine
 // stringa viene ignorato
-void token_quotes(t_pi *pi, t_str *str)
+void token_quotes(t_pai *pi, t_str *str)
 {
-	fprintf( tracciato, "token_quotes(t_pi*, %s)\tpi->line: %s\n", str->s, pi->line );
+	fprintf( tracciato, "token_quotes(t_pai*, %s)\tpi->line: %s\n", str->s, pi->line );
 	if (*pi->line == '"')
 		str->state = dq;
 	else 
@@ -213,10 +214,10 @@ void token_quotes(t_pi *pi, t_str *str)
 	str->state = word;
 }
 
-void token_space(t_pi *pi, t_str *str)
+void token_space(t_pai *pi, t_str *str)
 {
 	fprintf( tracciato
-			, "token_space(t_pi*, t_str*)\tpi->line: %s; str->s %s\n"
+			, "token_space(t_pai*, t_str*)\tpi->line: %s; str->s %s\n"
 			, pi->line, str->s );
 	if (str->s[0])
 	{
@@ -226,10 +227,10 @@ void token_space(t_pi *pi, t_str *str)
 	
 }
 
-void token_word(t_pi *pi, t_str *str)
+void token_word(t_pai *pi, t_str *str)
 {
 	fprintf( tracciato
-			, "token_word(t_pi*, t_str*)\tpi->line: %s; str->s %s\n"
+			, "token_word(t_pai*, t_str*)\tpi->line: %s; str->s %s\n"
 			, pi->line, str->s );
 	fstr_add_char(str, *pi->line);
 	str->state = word;
