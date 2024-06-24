@@ -87,7 +87,8 @@ BASE_DEPS := $(COMMON_DEPS)		\
 				minshell.h		\
 				parser_man.h	\
 				token_man.h		\
-				utility.h
+				utility.h		\
+				env/env.h
 
 
 BASE_SOURCES := $(COMMON_SOURCES)	\
@@ -100,7 +101,9 @@ BASE_SOURCES := $(COMMON_SOURCES)	\
 					token_man.c		\
 					tmp_utils.c		\
 					command_v1.c	\
-					utility.c
+					utility.c		\
+					env/env.c		\
+					env/env_utils.c
 
 BASE_OBJECTS := $(BASE_SOURCES:.c=.o)
 

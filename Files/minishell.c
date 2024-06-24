@@ -1,6 +1,8 @@
 #include "minishell.h"
 #include "parser_man.h"
 #include "command_v1.h"
+#include "env/env.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,16 +45,19 @@ int minishell(char **envp)
 	int		i;
 	char	*line;
 	t_vec2	vec2;
+	t_env	*env;
 
+	env = start_env(envp);
 	line = NULL;
 	i = 0;
 	fvec2_init(&vec2, 0);
+	printf("size: %d\n", vec2.size);
 	if (!pars_parsline(line, &vec2))
 		return (0);
-	while (vec2.size > i)
+	while (1)
 	{
-		take_commands(&vec2.tvec[i], envp);
-		i++;
+			take_commands(&vec2.tvec[i], envp, env);
+			break;
 	}
 	return (1);
 }

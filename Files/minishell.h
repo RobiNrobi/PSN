@@ -2,6 +2,8 @@
 #define MINISHELL_H
 
 #include "fvec2_man.h"
+#include "env/env.h"
+
 
 typedef struct s_global_info
 {
