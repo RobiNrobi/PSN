@@ -27,7 +27,7 @@ void fstr_close_str(t_str *str)
 
 int fstr_copy(t_str *dest, t_str const * const orig)
 {
-	fprintf( tracciato, "fstr_copy(s_str*, %s)\n", orig->s );
+	fprintf( tracciato, "fstr_copy(t_str*, t_str*)\n" );
 	int i;
 
 	if (!dest || !orig)
@@ -54,7 +54,7 @@ int fstr_copy_to_new(t_str *dest, const t_str * const orig)
 	dest->capacity = orig->capacity;
 	dest->size = orig->size;
 	dest->state = orig->state;
-	dest->s = malloc(sizeof(char) * (size_t)orig->capacity);
+	dest->s = my_calloc((size_t)orig->capacity, sizeof(char));
 	i = 0;
 	while (dest->capacity > i)
 	{
@@ -164,22 +164,27 @@ void fstr_print_str_n(t_str *str)
 	printf("\n");
 }
 
-int fstr_replace_from_pos(t_str *str, int ind, const char * const s)
+/*
+** fstr_replace_from_pos() replace part of the char* 'orig', from position
+**                         'ind', with the new char* 'rep'.
+**                         'orig' is expanded if needed.
+*/
+int fstr_replace_from_pos(t_str *orig, int ind, const char * const rep)
 {
-	fprintf( tracciato, "fstr_replace_from_pos(%s, %d, %s)\n", str->s, ind, s );
+	fprintf( tracciato, "fstr_replace_from_pos(%s, %d, %s)\n", orig->s, ind, rep );
 	int i;
 	int	len;
 
 	i = ind;
-	len = my_strlen(s);
-	while (str->size > i && len > i - ind)
+	len = my_strlen(rep);
+	while (orig->size > i && len > i - ind)
 	{
-		str->s[i] = s[i - ind];
+		orig->s[i] = rep[i - ind];
 		++i;
 	}
 	while (len > i - ind)
 	{
-		fstr_add_char(str, s[i - ind]);
+		fstr_add_char(orig, rep[i - ind]);
 		++i;
 	}
 	return (1);

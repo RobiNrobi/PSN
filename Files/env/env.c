@@ -28,6 +28,7 @@ t_elem	*lst_new(char *line)
 		key = ft_substr(line, 0, i);
 		value = ft_substr(line, (unsigned)(i + 1), ft_strlen(line) - i);
 		if (!key || !value || !elem)
+		// BUG: clang: potential leak of memory
 			return (NULL);
 		elem->key = key;
 		elem->value = value;

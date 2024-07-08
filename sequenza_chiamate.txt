@@ -1,0 +1,60 @@
+﻿\\/*
+main()
+    minishell()
+        pars_parsline()
+            read_a_line()           // temporanea
+            token_error_quotes()
+            display_error_syntax()
+            display_error()
+            pars_pars_on_pipes()
+            token_pars_03()
+            pars_check_syntax(cmds)
+        comm_pipe_execute()
+            [expand_env()]          // da spostare
+            comm_pipe_create()
+            comm_pipe_break()
+            comm_parse_cmd()
+*/
+
+
+Esempio:
+ls > file | cat -r -j >> pippo.dat
+
+/*
+Logica:
+    per sempre (finché non viene premuto CTRL+C)
+        riga = NULL
+        finché l'ultimo carattere di riga è '|'
+            leggi riga
+            controlla se le virgolette tornano?
+            espandi le variabili?
+            dividi in base ai '|' e ottieni un t_vec
+            per ogni elemento del t_vec
+                dividi l'elemento in base agli spazi e ottieni un t_vec2
+
+        loop t_vec2 (per ogni t_vec):               [pipe_loop_pipeline()]
+            crea istanza t_pi
+            inizializza pi->fd_pipes
+            inizializza t_pi a zero / NULL
+            riempi dati di t_pi
+                - conta numero di parole
+                - se redirect
+                    salta
+                    salta parola immediatamente successiva
+                riserva memoria per tutte le parole contate
+				Le prossime tre funzioni sono in temporanea
+                	assegna le parole a pi->args
+                	assegna i redirect a pi->infile/outfile/here_doc
+                	assegna pi->append
+                pi->cmd --> testa con access finché non esiste
+                    altrimenti return;
+                ROBI: FARE FUNZIONE CHE CONVERTA UN T_VEC2 IN CHAR** E UNA
+                      CHE CONVERTA UN CHAR** IN UN TVEC_2.
+            fai il forc
+            se il forc restituisce 0
+                chiudi fd[1]
+*/
+
+**Per Robi da fare.
+Subito: una funzione che copia un t_vec2 in un char** (indipendenti) e
+ 		una funzione che copia un char** in un t_vec2 (indipendenti)

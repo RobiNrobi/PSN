@@ -1,5 +1,7 @@
 #include "_extra.h"
 #include "Files/fstr_man.h"		// my_getline() --> t_str
+#include "Files/fvec2_man.h"
+#include "Files/tmp_utils.h"
 #include <stdio.h>
 #include <stdlib.h>				// read_a_line() --> malloc
 #include <unistd.h>				// my_getline() --> read()
@@ -68,4 +70,25 @@ char *read_a_line(const char * const str)
 	// OPTION 2
 	char* s = my_getline();
 	return s;
+}
+
+void tests_minishell(char** env)
+{
+	//DEBUG:
+	printf( "\n===============\nTest di debug su envp:\n" );
+	t_vec2 tenv;
+	fvec2_init( &tenv, 0 );
+	printf( "\nDeep copying 'env' into a t_vec2...\n" );
+	fvec2_deep_copy( &tenv, (char const *const *const)env );
+	fvec2_print_vec2( &tenv );
+	printf( "Converting back into char** and printing again:\n" );
+	char** capra = fvec2_turn_into_charpp( &tenv, &capra );
+	print_charpp( capra );
+	// Freing memory:
+	for (int i = 0; capra[i]; ++i) {
+		free( capra[i] );
+	}
+	free( capra );
+	fvec2_destroy( &tenv );
+	printf( "End test su envp:\n===============\n" );
 }

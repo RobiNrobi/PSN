@@ -23,7 +23,7 @@ int fvec_add_str(t_vec *vec, t_str *str)
 
 int fvec_close_add_str(t_vec *vec, t_str *str)
 {
-	fprintf( tracciato, "fvec_close_add_str(t_vec*, %s)\n", str->s );
+	fprintf( tracciato, "fvec_close_add_str(t_vec*, t_str*)\n" );
 	fstr_close_str(str);
 	return (fvec_add_str(vec, str));
 }
@@ -81,7 +81,8 @@ void	fvec_destroy(t_vec *vec)
 				fstr_destroy(&vec->tstr[i]);
 		--i;
 	}
-	fstr_destroy(&vec->tstr[i]);
+	if (!i && vec->tstr[i].s)       //FIXME: this really seems pointless or defective
+		fstr_destroy(&vec->tstr[i]);
 	free(vec->tstr);
 }
 
@@ -92,14 +93,15 @@ int fvec_double_cap(t_vec *vec)
 	t_str	*copy;
 
 	vec->capacity *= 2;
-	copy = malloc(sizeof(t_str) * (size_t)vec->capacity);
+	copy = my_calloc((size_t)vec->capacity, sizeof(t_str));
 	if (!copy)
 		return (0);
 	i = 0;
 	while (vec->size > i)
 	{
-		fstr_init(&copy[i], vec[i].capacity);
+		fstr_init(&copy[i], vec->tstr[i].capacity);
 		fstr_copy(&copy[i], &vec->tstr[i]);
+		fstr_destroy(&vec->tstr[i]);
 		++i;
 	}
 	free(vec->tstr);
@@ -130,6 +132,27 @@ int fvec_reset(t_vec *vec)
 	return (1);
 }
 
+/*
+** tvec_update_env_value() takes a t_vec and replace the t_str at index ind,
+**                         from position ch, with the current valuee from
+**                         getenv().
+*/
+int tvec_update_env_value(t_vec *vec, int ind, int ch)
+{
+	fprintf( tracciato, "tvec_update_env_value(t_vec*, %d, %d)\n", ind, ch );
+	char	*new_s;
+
+	new_s = getenv(&vec->tstr[ind].s[ch]);
+	if (!new_s)
+	{
+		fprintf( tracciato, "...pars_expand_var()\tnew_s is NULL\n" );
+		return (0);
+	}
+	fstr_replace_from_pos(&vec->tstr[ind], ch, new_s);
+	return (1);
+}
+
+// TODO: delete from here on:
 void fvec_print_vec(t_vec *vec)
 {
 	fprintf( tracciato, "fvec_print_vec(t_vec*)\n" );
@@ -145,3 +168,22 @@ void fvec_print_vec(t_vec *vec)
 	}
 	printf("\n");
 }
+
+/*
+** Unrequested and dangerous function!
+*/
+// char **fvec_expose_as_charpp(t_vec *vec, char ***s)
+// {
+// 	fprintf( tracciato, "fvec_expose_as_charpp(t_vec*, char***)\n" );
+// 	int i;
+
+// 	*s = my_calloc((size_t)(vec->size + 1), sizeof(char*));
+// 	(*s)[vec->size] = NULL;
+// 	i = 0;
+// 	while (vec->size)
+// 	{
+// 		(*s)[i] = vec->tstr[i].s;
+// 		++i;
+// 	}
+// 	return (*s);
+// }

@@ -22,9 +22,12 @@ void	fvec_destroy(t_vec *vec);
 int		fvec_double_cap(t_vec *vec);
 int		fvec_init(t_vec *vec, int cap);
 int		fvec_reset(t_vec *vec);
+int		tvec_update_env_value(t_vec *vec, int ind, int ch);
 
 // TODO: delete the following
 // Temporary / debug functions
 void	fvec_print_vec(t_vec *vec);
+// char	**fvec_expose_as_charpp(t_vec *vec, char ***s);
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 #endif // FVEC_MAN_H

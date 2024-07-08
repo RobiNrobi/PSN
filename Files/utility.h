@@ -1,7 +1,6 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-#include "unistd.h"
 /*
 ** stdlib.h needed for size_t
 */
@@ -22,9 +21,11 @@ int		my_isupper(int ch);
 void	*my_memcpy(void *dest, const void *src, int n);
 void	*my_memset(void *dest, int ch, size_t count);
 int		my_strcmp(char const *const s1, char const *const s2);
+char	*my_strcpy(char *dest, char const* src);
 char	*my_strdup(const char *str);
 char	*my_strjoin(char const *const s1, char const *const s2);
 int		my_strlen(char const *const s);
+int		strcpy_up_to_char(char *s1, char const *const s2, char c);
 
 #endif // UTILITY_H
 

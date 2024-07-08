@@ -2,6 +2,8 @@
 #include <errno.h>			// TODO: remove if errno not set in strdup
 #include <stdlib.h>
 
+#include <unistd.h>
+
 //TODO: remove the following
 #include <stdio.h>
 extern FILE* tracciato;
@@ -169,6 +171,7 @@ int my_isupper(int ch)
 */
 void	*my_memcpy(void *dest, const void *src, int n)
 {
+	fprintf( tracciato, "my_memcpy(void*, void*, %d)\n", n );
 	int	i;
 
 	if (!dest || !src)
@@ -181,6 +184,7 @@ void	*my_memcpy(void *dest, const void *src, int n)
 	}
 	return (dest);
 }
+
 void *my_memset(void *dest, int ch, size_t count)
 {
 	fprintf( tracciato, "my_memset(void*, %d, %lu)\n", ch, count );
@@ -232,8 +236,36 @@ int my_strcmp(char const *const s1, char  const* const s2)
 }
 
 /*
+** emulates strcpy() from string.h
+** From man strcpy
+** ---------------
+** char *strcpy(char *restrict dst, const char *restrict src);
+** These functions copy the string pointed to by src, into a string at the
+** buffer pointed to by dst.
+** The programmer is responsible for allocating a destination buffer large
+** enough, that is, strlen(src) + 1.
+** These functions return dst.
+*/
+char *my_strcpy(char *dest, const char *src)
+{
+	fprintf( tracciato, "my_strcpy(%s, %s)\n", dest, src );
+	int i;
+
+	if (!dest || !src)
+		return (dest);
+	i = 0;
+	while (src[i])
+	{
+		dest[i] = src[i];
+		++i;
+	}
+	dest[i] = '\0';
+	return (dest);
+}
+
+/*
 ** emulates strdup() from string.h
-** Fom man strdup:
+** From man strdup:
 ** ---------------
 ** char *strdup(const char *s);
 ** The strdup() function returns a pointer to a new string which is a duplicate
@@ -257,6 +289,7 @@ int my_strcmp(char const *const s1, char  const* const s2)
 */
 char	*my_strdup(const char *str)
 {
+	fprintf( tracciato, "my_strdup(%s)\n", str );
 	int		nume;
 	char	*cpy;
 
@@ -308,5 +341,21 @@ int my_strlen(char const *const s)
 	i = 0;
 	while (s[i])
 		++i;
+	return (i);
+}
+
+int strcpy_up_to_char(char *s1, const char * const s2, char c)
+{
+	fprintf( tracciato, "strcpy_up_to_char(%s, %s, %c)\n", s1, s2, c );
+	int	i;
+
+	if (!s1 || !s2 || !*s2)
+		return (0);
+	i = 0;
+	while (s2[i] && c != s2[i])
+	{
+		s1[i] = s2[i];
+		++i;
+	}
 	return (i);
 }

@@ -6,6 +6,8 @@ char* my_getline(void);
 int openf(char const *const fname);
 char* read_a_line(char const *const str);
 
+void tests_minishell(char** two);
+
 #endif // _EXTRA_H
 // NOTE: Admitted functions:
 // access

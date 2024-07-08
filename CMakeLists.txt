@@ -27,10 +27,9 @@ add_executable(MiniShell_01
 	Files/pipeline_man.h   Files/pipeline_man.c
 	Files/tmp_utils.h      Files/tmp_utils.c
 	Files/token_man.h      Files/token_man.c
-
 	Files/utility.h        Files/utility.c
 	Files/env/env.h        Files/env/env.c
-						   Files/env/env_utils.c
+	                       Files/env/env_utils.c
 )
 
 

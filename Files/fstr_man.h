@@ -36,7 +36,7 @@ void	fstr_double_cap(t_str *str);
 char	*fstr_init(t_str *str, int cap);
 void	fstr_init_els(t_str *str);
 void	fstr_print_str(t_str *str);
-int		fstr_replace_from_pos(t_str *str, int ind, const char * const s);
+int		fstr_replace_from_pos(t_str *orig, int ind, const char * const rep);
 int		fstr_reset(t_str *str);
 
 // TODO: delete the following:

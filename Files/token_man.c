@@ -7,20 +7,20 @@
 extern FILE* tracciato;
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-void token_dollar(t_pai *pi, t_str *str)
+void token_dollar(t_pai *pai, t_str *str)
 {
 	fprintf( tracciato, "token_dollar(t_pai*, %s)\n", str->s );
 	char *s;
 	t_str str2;
 
-	++pi->line;
+	++pai->line;
 	fstr_init(&str2, 0);
-	while (ANSI_OSMENAJ_isalnum(*pi->line))
+	while (ANSI_OSMENAJ_isalnum(*pai->line))
 	{
-		fstr_add_char(&str2, *pi->line);
-		++pi->line;
+		fstr_add_char(&str2, *pai->line);
+		++pai->line;
 	}
-	--pi->line;
+	--pai->line;
 	fprintf( tracciato, "...token_dollar()str2.s: %s\n", str->s );
 	s = getenv(str2.s);
 	if (s)
@@ -64,41 +64,41 @@ int token_error_quotes(char *line)
 	return (0);
 }
 
-void token_great(t_pai *pi, t_str *str)
+void token_great(t_pai *pai, t_str *str)
 {
 	fprintf( tracciato, "token_great(t_pai*, %s)\n", str->s );
 	if (str->s[0])
 	{
-		fvec_close_add_str(pi->v, str);
+		fvec_close_add_str(pai->v, str);
 		fstr_reset(str);
 	}
-	if ('>' == pi->line[1])
+	if ('>' == pai->line[1])
 		str->state = greatgreat;
 	else
 		str->state = great;
-	fstr_add_char(str, *pi->line);
+	fstr_add_char(str, *pai->line);
 	if (greatgreat == str->state)
-		fstr_add_char(str, *++pi->line);
-	fvec_close_add_str(pi->v, str);
+		fstr_add_char(str, *++pai->line);
+	fvec_close_add_str(pai->v, str);
 	fstr_reset(str);
 }
 
-void token_less(t_pai *pi, t_str *str)
+void token_less(t_pai *pai, t_str *str)
 {
 	fprintf( tracciato, "token_less(t_pai*, %s)\n", str->s );
 	if (str->s[0])
 	{
-		fvec_close_add_str(pi->v, str);
+		fvec_close_add_str(pai->v, str);
 		fstr_reset(str);
 	}
-	if ('<' == pi->line[1])
+	if ('<' == pai->line[1])
 		str->state = lessless;
 	else
 		str->state = less;
-	fstr_add_char(str, *pi->line);
+	fstr_add_char(str, *pai->line);
 	if (lessless == str->state)
-		fstr_add_char(str, *++pi->line);
-	fvec_close_add_str(pi->v, str);
+		fstr_add_char(str, *++pai->line);
+	fvec_close_add_str(pai->v, str);
 	fstr_reset(str);
 }
 
@@ -175,63 +175,64 @@ void token_pars_03(char *line, t_vec *vec)
 	fstr_destroy(&str);
 }
 
-void token_pipe(t_pai *pi, t_str *str)
+void token_pipe(t_pai *pai, t_str *str)
 {
+	fprintf( tracciato, "token_pipe(t_pai*, t_str*)\n" );
 	if (str->s[0])
 	{
-		fvec_close_add_str(pi->v, str);
+		fvec_close_add_str(pai->v, str);
 		fstr_reset(str);
 	}
 	str->state = pipes;
-	fstr_add_char(str, *pi->line);
-	fvec_close_add_str(pi->v, str);
+	fstr_add_char(str, *pai->line);
+	fvec_close_add_str(pai->v, str);
 	fstr_reset(str);
 }
 
 // $ se la variabile non esiste il contenuto dal $ a separatore (spazio) o fine
 // stringa viene ignorato
-void token_quotes(t_pai *pi, t_str *str)
+void token_quotes(t_pai *pai, t_str *str)
 {
-	fprintf( tracciato, "token_quotes(t_pai*, %s)\tpi->line: %s\n", str->s, pi->line );
-	if (*pi->line == '"')
+	fprintf( tracciato, "token_quotes(t_pai*, %s)\tpi->line: %s\n", str->s, pai->line );
+	if (*pai->line == '"')
 		str->state = dq;
 	else 
 		str->state = sq;
-	while (*++pi->line)
+	while (*++pai->line)
 	{
-		if ('$' == *pi->line && dq == str->state)
+		if ('$' == *pai->line && dq == str->state)
 		{
-			token_dollar(pi, str);
-			++pi->line;
+			token_dollar(pai, str);
+			++pai->line;
 			str->state = dq;
 		}
-		if (('"' == *pi->line && str->state == dq) ||
-			('\'' == *pi->line && str->state == sq))
+		if (('"' == *pai->line && str->state == dq) ||
+			('\'' == *pai->line && str->state == sq))
 			break;
 		else
-			fstr_add_char(str, *pi->line);
+			fstr_add_char(str, *pai->line);
 	}
 	str->state = word;
 }
 
-void token_space(t_pai *pi, t_str *str)
+void token_space(t_pai *pai, t_str *str)
 {
 	fprintf( tracciato
 			, "token_space(t_pai*, t_str*)\tpi->line: %s; str->s %s\n"
-			, pi->line, str->s );
+			, pai->line, str->s );
 	if (str->s[0])
 	{
-		fvec_close_add_str(pi->v, str);
+		fvec_close_add_str(pai->v, str);
 		fstr_reset(str);
 	}
 	
 }
 
-void token_word(t_pai *pi, t_str *str)
+void token_word(t_pai *pai, t_str *str)
 {
 	fprintf( tracciato
 			, "token_word(t_pai*, t_str*)\tpi->line: %s; str->s %s\n"
-			, pi->line, str->s );
-	fstr_add_char(str, *pi->line);
+			, pai->line, str->s );
+	fstr_add_char(str, *pai->line);
 	str->state = word;
 }

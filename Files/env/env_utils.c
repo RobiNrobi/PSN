@@ -61,6 +61,7 @@ void	del_env_elem(t_env *env, t_elem *elem)
 	if (elem && elem->prev)
 		elem->prev->next = elem->next;
 	env->size--;
+	// BUG: clang: access to field 'key' results in dereferencing a null pointer
 	free(elem->key);
 	free(elem->value);
 	free(elem);
@@ -77,6 +78,7 @@ void	del_env(t_env *env)
 		free(tmp->key);
 		free(tmp->value);
 		free(tmp);
+		// BUG: clang: use of memory after it is freed
 		tmp = tmp->next;
 	}
 	free(env);

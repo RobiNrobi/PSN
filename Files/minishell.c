@@ -1,7 +1,8 @@
 #include "minishell.h"
 #include "parser_man.h"
-#include "command_v1.h"
-#include "env/env.h"
+// #include "command_v1.h"
+// #include "env/env.h"
+#include "pipeline_man.h"   // Unificare e rimuovere
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,25 +41,20 @@ int main(int argc, char *argv[], char **envp)
 int minishell(char **envp)
 {
 	fprintf( tracciato, "minishell()\n" );
-
-	int		i;
 	char	*line;
 	t_vec2	vec2;
-	t_env	*env; // eliminare
 
-	env = start_env(envp); // eliminare
 	line = NULL;
 	fvec2_init(&vec2, 0);
+	// TODO: remove rthe following:
+	// tests_minishell(envp);
+	// ^^^^^^^^^^^^^^^^^^^^^^^^^^
 	if (!pars_parsline(line, &vec2))
-		return (0);
-	i = 0;
-	// SPOSTARE IN UNA FUNZIONE CHE SEGUE LO SCHEMA "execute pipeline()"
-	while (vec2.size > i)
 	{
-		comm_take_cmds(&vec2.tvec[i], envp, env);
-		i++;
-//		take_commands(&vec2.tvec[i], envp, env);
-//		break;
+		fvec2_destroy(&vec2);
+		return (0);
 	}
+	pipe_open_pipes(&vec2, envp);
+	fvec2_destroy(&vec2);
 	return (1);
 }
